@@ -6,11 +6,7 @@
             @foreach ($pages as $page)
                 <div class="flex flex-col p-4">
                     <a href="#">{{ $page->name }}</a>
-                    <div class="flex flex-row">
-                        <p>Создано <a href="{{ route('user.show', $page->publisher->slug) }}">
-                                {{ $page->publisher->name }}
-                            </a></p>
-                    </div>
+                    @include('components.createdBy', [$item = $page])
                 </div>
             @endforeach
         </div>

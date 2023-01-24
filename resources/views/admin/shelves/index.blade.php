@@ -6,7 +6,7 @@
             @foreach ($shelves as $shelf)
                 <div class="flex flex-col p-4">
                     <a href="{{ route('shelf.show', $shelf->slug) }}">{{ $shelf->name }}</a>
-                    @include('components.createdBy')
+                    @include('components.createdBy', [$item = $shelf])
                 </div>
             @endforeach
         </div>
