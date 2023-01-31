@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateShelfRequest extends FormRequest
+class BookStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -17,7 +17,6 @@ class CreateShelfRequest extends FormRequest
     {
         return true;
     }
-    
     /**
      * Validate data
      *
@@ -34,7 +33,6 @@ class CreateShelfRequest extends FormRequest
         ]);
       
     }
-   
 
     /**
      * Get the validation rules that apply to the request.
@@ -47,25 +45,9 @@ class CreateShelfRequest extends FormRequest
             'name' => ['required', 'string' ,' min:3', 'max:60'],
             'description' =>['string', 'min:10', 'max:60'],
             'image' => 'nullable|mimes:jpeg,png,gif,webp',
-            'book_id' => 'nullable',
             'user_id' => 'required',
-            'slug' => 'required|unique:shelves,slug'
-        ];
-    }
-
-     /**
-     * Get the error messages for the defined validation rules.
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'name.required' => 'Поле обязательно для заполнения',      
-            'name.min:3' => 'Минимальное количество символов: 3',
-            'name.max:60' => 'Максимальное количество символов: 60',   
-            'description.max:1000' => 'Максимальное количество символов: 1000',
-            'description.string' => 'Только строка'
+            'shelf_id' => 'nullable',
+            'slug' => 'required|unique:books,slug'
         ];
     }
 }

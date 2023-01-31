@@ -15,12 +15,14 @@ return new class extends Migration
     {
         Schema::create('shelves', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('user_id')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('slug')->unique();
             $table->text('description');
             $table->string('image')->nullable();
-            $table->timestamps();
+            $table->timestamps(); 
+            
+        
         });
     }
 

@@ -3,10 +3,16 @@
         <h1 class="text-bold">Shelves</h1>
         <div class="flex flex-start">
             @foreach ($shelves as $shelf)
-                <x-item-card :item='$shelf' />
+                <div class="flex flex-col">
+                    <x-item-card :item='$shelf'>
+                        <x-item-show-link :href="route('shelf.show', $shelf->slug)">{{$shelf->name}}</x-item-show-link>
+                    </x-item-card>
+                    @foreach ($shelf->books as $book)
+                     <x-shelf-books :book="$book" />
+                    @endforeach
+                </div>
             @endforeach
-        </div>
-        <div>
+            
             <a href="{{ route('shelf.create') }}">Новая полка</a>
         </div>
     </div>

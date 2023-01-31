@@ -15,13 +15,13 @@ return new class extends Migration
     {
         Schema::create('books', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('user_id');
-            $table->foreignId('shelf_id');
+            $table->unsignedBigInteger('user_id');
+            $table->foreignId('shelf_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->string('image')->nullable();
-       
+
             $table->timestamps();
         });
     }

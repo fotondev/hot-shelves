@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateShelfRequest;
 use App\Entities\Repositories\BookRepository;
 use App\Entities\Repositories\ShelfRepository;
+use App\Http\Requests\UpdateShelfRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,7 +26,7 @@ class ShelfController extends Controller
     public function index()
     {
         return view('admin.shelves.index', [
-            'shelves' => Shelf::latest()->filter(request(['search']))->get()
+            'shelves' => Shelf::latest()->with('books')->filter(request(['search']))->get()
         ]);
     }
 
@@ -47,7 +48,8 @@ class ShelfController extends Controller
      */
     public function create()
     {
-        return view('admin.shelves.create');
+        $books = Book::all();
+        return view('admin.shelves.create', compact('books'));
     }
 
     /**
@@ -57,21 +59,43 @@ class ShelfController extends Controller
     {
         $data = $request->validated();
         $shelf = Shelf::create($data);
+        session()->flash('message', 'Полка создана');
         return redirect(route('shelves.show'));
     }
 
-    public function edit()
+    /**
+     * Show edit shelf form
+     */
+    public function edit(string $slug)
     {
-        # code...
+        $shelf = Shelf::where('slug',  $slug)->firstOrFail();
+        $books = Book::all();
+        return view('admin.shelves.edit', [
+            'shelf' => $shelf,
+            'books' => $books
+        ]);
     }
 
-    public function update()
+    /**
+     * Update shelf
+     */
+    public function update(UpdateShelfRequest $request, string $slug)
     {
-        # code...
+        $data = $request->validated();
+        $shelf = Shelf::where('slug',  $slug)->firstOrFail();
+        $shelf->update($data);
+        session()->flash('message', 'Полка отредактирована');
+        return redirect(route('shelves.show'));
     }
 
-    public function destroy()
+     /**
+     * Delete shelf
+     */
+    public function destroy(string $slug)
     {
-        # code...
+        $shelf = Shelf::where('slug',  $slug)->firstOrFail();
+        $shelf->delete();
+        session()->flash('message', 'Полка удалена');
+        return redirect(route('shelves.show'));
     }
 }

@@ -23,6 +23,8 @@ class Book extends Model
         'name',
         'description',
         'image',
+        'user_id',
+        'shelf_id'
     ];
 
     /**
@@ -35,10 +37,11 @@ class Book extends Model
     public static function scopeFilter($query, array $filters): void
     {
         $query->when($filters['search'] ?? false, fn ($query, $search) =>
-        $query
-            ->where('name', 'like', '%' . $search . '%')
-            ->orWhere('description', 'like', '%' . $search . '%'));
-
+        $query->where(fn($q)=>
+            $q->where('name', 'like', '%' . $search . '%')
+            ->orWhere('description', 'like', '%' . $search . '%')
+        )
+        );
 
         $query->when($filters['shelf'] ?? false, fn ($query, $shelf) =>
         $query

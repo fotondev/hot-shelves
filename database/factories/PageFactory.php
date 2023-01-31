@@ -21,7 +21,7 @@ class PageFactory extends Factory
         return [
             'name' => fake()->sentence(),
             'slug' => fake()->slug(),
-            'content' => fake()->text(),   
+            'body' => fake()->text(),   
         ];
     }
 }

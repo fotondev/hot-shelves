@@ -3,7 +3,7 @@
         @if (isset($currentShelf))
             <button>{{ $currentShelf->name }}</button>
         @else
-            <button class="">Полки</button>
+            <x-primary-button>Полки</x-primary-button>
         @endif
     </x-slot>
     <x-slot name="content">

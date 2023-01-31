@@ -33,6 +33,7 @@ class Shelf extends Model
         'name',
         'slug',
         'description',
+        'image_id',
         'user_id'
     ];
     protected $with = [
@@ -45,9 +46,10 @@ class Shelf extends Model
     public function scopeFilter($query, array $filters): void
     {
         if ($filters['search'] ?? false) {
-            $query
-                ->where('name', 'like', '%'. request('search') . '%')
-                ->orWhere('description', 'like', '%' . request('search') . '%');
+            $query->where(fn($q)=>
+                $q->where('name', 'like', '%'. request('search') . '%')
+                ->orWhere('description', 'like', '%' . request('search') . '%')
+        );
         }
     }
 
