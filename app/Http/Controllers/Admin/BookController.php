@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Book;
-use App\Models\Shelf;
-use Illuminate\Http\Request;
+use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BookStoreRequest;
 use App\Http\Requests\BookUpdateRequest;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 
 class BookController extends Controller
 {
-
-    public function index()
+    /**
+     * Show all books
+     */
+    public function index(): View
     {
         return view('admin.books.index', [
             'books' => Book::latest()
@@ -22,11 +23,18 @@ class BookController extends Controller
                 ->get()
         ]);
     }
-    public function create()
+
+    /**
+     * Show create form
+     */
+    public function create(): View
     {
         return view('admin.books.create');
     }
 
+    /**
+     * Store new book
+     */
     public function store(BookStoreRequest $request)
     {
         $data = $request->validated();
@@ -34,7 +42,10 @@ class BookController extends Controller
         return redirect(route('books.show'));
     }
 
-    public function show(string $slug)
+    /**
+     * Show book
+     */
+    public function show(string $slug): View
     {
         $book = Book::where('slug', '=', $slug)->with(['pages', 'publisher'])->firstOrFail();
         $pages = $book->pages->load(['publisher']);
@@ -44,11 +55,17 @@ class BookController extends Controller
         ]);
     }
 
-    public function edit()
+     /**
+     * Show edit form
+     */
+    public function edit(): View
     {
         return view('admin.books.edit');
     }
 
+     /**
+     * Update book
+     */
     public function update(BookUpdateRequest $request, string $slug)
     {
         $data = $request->validated();
@@ -57,6 +74,9 @@ class BookController extends Controller
         return redirect(route('book.show'));
     }
 
+    /**
+     * Delete book
+     */
     public function destroy(string $slug)
     {
         $book = Book::where('slug', $slug)->firstOrFail();

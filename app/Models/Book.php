@@ -34,6 +34,9 @@ class Book extends Model
         'publisher'
     ];
 
+    /**
+     * Search filter
+     */
     public static function scopeFilter($query, array $filters): void
     {
         $query->when($filters['search'] ?? false, fn ($query, $search) =>

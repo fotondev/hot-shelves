@@ -2,20 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Stringable;
 use App\Models\Book;
-use App\Models\User;
 use App\Models\Shelf;
-use Carbon\CarbonPeriod;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateShelfRequest;
-use App\Entities\Repositories\BookRepository;
-use App\Entities\Repositories\ShelfRepository;
 use App\Http\Requests\UpdateShelfRequest;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\View\View;
+
 
 class ShelfController extends Controller
 {
@@ -23,7 +16,7 @@ class ShelfController extends Controller
     /**
      * Show all shelves
      */
-    public function index()
+    public function index(): View
     {
         return view('admin.shelves.index', [
             'shelves' => Shelf::latest()->with('books')->filter(request(['search']))->get()
@@ -33,7 +26,7 @@ class ShelfController extends Controller
     /**
      * Show shelf
      */
-    public function show(string $slug)
+    public function show(string $slug): View
     {
         $shelf = Shelf::where('slug',  $slug)->firstOrFail();
         $books = $shelf->books;
@@ -46,7 +39,7 @@ class ShelfController extends Controller
     /**
      * Show create shelf form
      */
-    public function create()
+    public function create(): View
     {
         $books = Book::all();
         return view('admin.shelves.create', compact('books'));
@@ -66,7 +59,7 @@ class ShelfController extends Controller
     /**
      * Show edit shelf form
      */
-    public function edit(string $slug)
+    public function edit(string $slug): View
     {
         $shelf = Shelf::where('slug',  $slug)->firstOrFail();
         $books = Book::all();

@@ -22,7 +22,9 @@ class ProfileController extends Controller
     public function show(string $slug)
     {
         $publisher = User::query()->where('slug', $slug)->firstOrFail();
+
         $books = Book::where('user_id', $publisher->id)->with('pages')->get();
+
         return view('profile.show', [
             'books' => $books,
             'publisher' => $publisher
