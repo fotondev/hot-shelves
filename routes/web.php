@@ -18,13 +18,18 @@ use App\Http\Controllers\UserProfileController;
 |
 */
 
+require __DIR__.'/auth.php';
+
+
 Route::get('/', function () {
     return view('welcome');
-});
+})->middleware('guest');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/publisher/{slug}', [ProfileController::class, 'show'])->name('profile.show');
@@ -33,7 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+
 
 
 //Admin Middleware
@@ -45,8 +50,8 @@ Route::middleware('auth', 'admin')->group(function () {
     Route::post('/shelves', [ShelfController::class, 'store'])->name('shelf.store');
     Route::get('/shelves/{shelf:slug}', [ShelfController::class, 'show'])->name('shelf.show');
     Route::get('/shelves/{slug}/edit', [ShelfController::class, 'edit'])->name('shelf.edit');
-    Route::post('/shelves/{slug}', [ShelfController::class, 'update'])->name('shelf.update');
-    Route::post('/shelves/{slug}', [ShelfController::class, 'destroy'])->name('shelf.delete');
+    Route::put('/shelves/{slug}', [ShelfController::class, 'update'])->name('shelf.update');
+    Route::delete('/shelves/{slug}', [ShelfController::class, 'destroy'])->name('shelf.delete');
 
     //Books   
     Route::get('/shelves/{shelfSlug}/create-book', [BookController::class, 'create'])->name('shelf.book.create');
@@ -56,8 +61,8 @@ Route::middleware('auth', 'admin')->group(function () {
     Route::get('/books', [BookController::class, 'index'])->name('books.show');
     Route::get('/books/{slug}', [BookController::class, 'show'])->name('book.show');
     Route::get('/books/{slug}/edit', [BookController::class, 'edit'])->name('book.edit');
-    Route::post('/books/{slug}', [BookController::class, 'update'])->name('book.update');
-    Route::post('/books', [BookController::class, 'destroy'])->name('book.delete');
+    Route::put('/books/{slug}', [BookController::class, 'update'])->name('book.update');
+    Route::delete('/books', [BookController::class, 'destroy'])->name('book.delete');
     //Pages
     Route::get('/books/{bookSlug}/create-page', [PageController::class, 'create'])->name('page.create');
     Route::post('/books/{bookSlug}', [PageController::class, 'store'])->name('page.store');
@@ -65,8 +70,8 @@ Route::middleware('auth', 'admin')->group(function () {
     Route::get('/books/{bookSlug}/pages', [PageController::class, 'index'])->name('pages.show');
     Route::get('/books/{bookSlug}/pages/{slug}', [PageController::class, 'show'])->name('page.show');
     Route::get('/books/{bookSlug}/pages/{slug}/edit', [PageController::class, 'edit'])->name('page.edit');
-    Route::post('/books/{bookSlug}/pages/{slug}', [PageController::class, 'update'])->name('page.update');
-    Route::post('/books/{bookSlug}/pages', [PageController::class, 'destroy'])->name('book.delete');
+    Route::put('/books/{bookSlug}/pages/{slug}', [PageController::class, 'update'])->name('page.update');
+    Route::delete('/books/{bookSlug}/pages', [PageController::class, 'destroy'])->name('book.delete');
 
 
     // User Profile routes
