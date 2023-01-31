@@ -13,6 +13,12 @@ class BookController extends Controller
 
     public function index()
     {
+        return view('admin.books.index', [
+            'books' => Book::latest()
+                ->filter(request(['search', 'shelf',]))
+                ->with('publisher')
+                ->get()
+        ]);
     }
     public function create()
     {
@@ -27,12 +33,9 @@ class BookController extends Controller
     public function show(string $slug)
     {
         $book = Book::where('slug', '=', $slug)->first();
-        if ($book === null) {
-            throw new ModelNotFoundException();
-        }
         $pages = $book->pages->load(['publisher']);
-      
-        return view('admin.pages.index', [
+
+        return view('admin.book.show', [
             'book' => $book,
             'pages' => $pages,
         ]);

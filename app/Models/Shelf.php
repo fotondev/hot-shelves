@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 //  *
 //  */
 
-class Shelf extends Model 
+class Shelf extends Model
 {
     use HasFactory;
 
@@ -40,6 +40,18 @@ class Shelf extends Model
     ];
 
     /**
+     * Search filter
+     */
+    public function scopeFilter($query, array $filters): void
+    {
+        if ($filters['search'] ?? false) {
+            $query
+                ->where('name', 'like', '%'. request('search') . '%')
+                ->orWhere('description', 'like', '%' . request('search') . '%');
+        }
+    }
+
+    /**
      * Get the url for this shelf.
      */
     public function getUrl(string $path = ''): string
@@ -55,12 +67,11 @@ class Shelf extends Model
         return $this->hasMany(Book::class);
     }
 
-     /**
+    /**
      * Get the user of this shelf.
      */
     public function publisher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-   
 }

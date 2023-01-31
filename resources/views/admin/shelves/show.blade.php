@@ -1,20 +1,18 @@
 <x-app-layout>
     <h1><b>SHelf show page</b></h1>
     <div>
-        @if (count($books) > 0)
-            @foreach ($books as $book)
-                <ul>
-                    <li><a href="{{route('book.show', $book->slug)}}">{{ $book->name }}</a>
-                        <div class="flex flex-row">
-                            <p>Создано <a href="{{ route('user.show', $book->publisher->slug) }}">
-                                    {{ $book->publisher->name }}
-                                </a></p>
-                        </div>
-                    </li>
-                </ul>
-            @endforeach
-        @else
-            <div>Полка пустая</div>
-        @endif
+        {{-- @foreach ($books as $book)
+            <x-item-card :item='$book' />
+        @endforeach --}}
+    @forelse ($books as $book)
+        {{$book->name}}
+    @empty
+        <p>no books</p>
+    @endforelse
+    <div class="">
+      <x-shelf-dropdown>
+      </x-shelf-dropdown>
+    </div>
+
     </div>
 </x-app-layout>

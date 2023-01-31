@@ -32,6 +32,25 @@ class Book extends Model
         'publisher'
     ];
 
+    public static function scopeFilter($query, array $filters): void
+    {
+        $query->when($filters['search'] ?? false, fn ($query, $search) =>
+        $query
+            ->where('name', 'like', '%' . $search . '%')
+            ->orWhere('description', 'like', '%' . $search . '%'));
+
+
+        $query->when($filters['shelf'] ?? false, fn ($query, $shelf) =>
+        $query
+            ->whereHas(
+                'shelf',
+                fn ($query) =>
+                $query
+                    ->where('slug', $shelf)
+            ));
+    }
+
+
     /**
      * Get the shelves for this book
      */

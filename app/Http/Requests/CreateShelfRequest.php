@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateShelfRequest extends FormRequest
@@ -15,6 +17,24 @@ class CreateShelfRequest extends FormRequest
     {
         return true;
     }
+    
+    /**
+     * Validate data
+     *
+     * @return void
+     */
+    public function prepareForValidation(): void
+    {
+        $this->merge([
+            'slug' => Str::slug($this->input('name'))
+        ]);
+
+        $this->merge([
+            'user_id' => Auth::id()
+        ]);
+      
+    }
+   
 
     /**
      * Get the validation rules that apply to the request.
@@ -26,8 +46,10 @@ class CreateShelfRequest extends FormRequest
         return [
             'name' => ['required', 'string' ,' min:3', 'max:60'],
             'description' =>['string', 'min:10', 'max:60'],
-            'image' => array_merge(['nullable'], ['mimes:jpeg,png,gif,webp']),
-            'book_id' => 'nullable'
+            'image' => 'nullable|mimes:jpeg,png,gif,webp',
+            'book_id' => 'nullable',
+            'user_id' => 'required',
+            'slug' => 'unique'
         ];
     }
 
@@ -43,7 +65,7 @@ class CreateShelfRequest extends FormRequest
             'name.min:3' => 'Минимальное количество символов: 3',
             'name.max:60' => 'Максимальное количество символов: 60',   
             'description.max:1000' => 'Максимальное количество символов: 1000',
-            'description.string' => 'Максимальное количество символов: 1000'
+            'description.string' => 'Только строка'
         ];
     }
 }

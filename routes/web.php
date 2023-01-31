@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\Admin\BookController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\BookController;
+use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\ShelfController;
-use App\Http\Controllers\Auth\CustomAuthController;
 use App\Http\Controllers\UserProfileController;
 
 /*
@@ -17,30 +18,35 @@ use App\Http\Controllers\UserProfileController;
 |
 */
 
-//Home 
-
 Route::get('/', function () {
     return view('welcome');
 });
 
-//Login And SignOut
-Route::get('/login', [CustomAuthController::class, 'index'])->name('login');
-Route::post('/login', [CustomAuthController::class, 'store'])->name('login.store');
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/publisher/{slug}', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
+
 
 //Admin Middleware
 Route::middleware('auth', 'admin')->group(function () {
-    Route::get('/dashboard', [CustomAuthController::class, 'dashboard'])->name('dashboard');
-    Route::post('/signout', [CustomAuthController::class, 'signOut'])->name('signout');
-
 
     //Shelves
     Route::get('/shelves', [ShelfController::class, 'index'])->name('shelves.show');
     Route::get('/create-shelf', [ShelfController::class, 'create'])->name('shelf.create');
     Route::post('/shelves', [ShelfController::class, 'store'])->name('shelf.store');
-    Route::get('/shelves/{slug}', [ShelfController::class, 'show'])->name('shelf.show');
+    Route::get('/shelves/{shelf:slug}', [ShelfController::class, 'show'])->name('shelf.show');
     Route::get('/shelves/{slug}/edit', [ShelfController::class, 'edit'])->name('shelf.edit');
     Route::post('/shelves/{slug}', [ShelfController::class, 'update'])->name('shelf.update');
-    // Route::post('/shelves', [ShelfController::class, 'destroy'])->name('shelf.delete');
+    Route::post('/shelves/{slug}', [ShelfController::class, 'destroy'])->name('shelf.delete');
 
     //Books   
     Route::get('/shelves/{shelfSlug}/create-book', [BookController::class, 'create'])->name('shelf.book.create');

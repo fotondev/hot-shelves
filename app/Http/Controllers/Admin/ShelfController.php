@@ -19,27 +19,35 @@ use Illuminate\Support\Facades\Auth;
 class ShelfController extends Controller
 {
 
-
     /**
      * Show all shelves
      */
     public function index()
     {
-        $shelves = Shelf::all();
         return view('admin.shelves.index', [
-            'shelves' => $shelves
+            'shelves' => Shelf::latest()->filter(request(['search']))->get()
         ]);
     }
 
+    /**
+     * Show shelf
+     */
+    public function show(string $slug)
+    {
+        $shelf = Shelf::where('slug',  $slug)->firstOrFail();
+        $books = $shelf->books;
+        return view('admin.shelves.show', [
+            'shelf' => $shelf,
+            'books' => $books,
+        ]);
+    }
 
     /**
      * Show create shelf form
      */
     public function create()
     {
-        return view('admin.shelves.create', [
-            'books' => Book::query()->latest()->select('id', 'name')->get()
-        ]);
+        return view('admin.shelves.create');
     }
 
     /**
@@ -48,28 +56,8 @@ class ShelfController extends Controller
     public function store(CreateShelfRequest $request)
     {
         $data = $request->validated();
-        if(!auth()->check()){
-          return to_route('login');
-        }
-        $data['user_id'] = auth()->id();
-        $data['slug'] = Str::slug($data['name']);
         $shelf = Shelf::create($data);
-        return view('admin.shelves.index', [
-            'shelves' => Shelf::all()
-        ]);
-    }
-
-    public function show($slug)
-    {
-        $shelf = Shelf::where('slug', '=', $slug)->first();
-        if ($shelf === null) {
-            throw new ModelNotFoundException();
-        }
-        $books = $shelf->books;
-        return view('admin.shelves.show', [
-            'shelf' => $shelf,
-            'books' => $books,
-        ]);
+        return redirect(route('shelves.show'));
     }
 
     public function edit()
