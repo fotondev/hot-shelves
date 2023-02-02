@@ -2,23 +2,11 @@
 
 namespace App\Models;
 
-use App\Tools\SlugBuilder;
-use Illuminate\Database\Eloquent\Model;
-use App\Interfaces\SlugBuilderInterface;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-// /**
-//  * Class Shelf
-//  * Class for shelf
-//  * 
-//  *
-//  * @property int        $id
-//  * @property string     $name
-//  * @property string     $slug
-//  *
-//  */
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 
 class Shelf extends Model
 {
@@ -34,10 +22,7 @@ class Shelf extends Model
         'slug',
         'description',
         'image_id',
-        'user_id'
-    ];
-    protected $with = [
-        'publisher'
+        'createdBy'
     ];
 
     /**
@@ -61,19 +46,18 @@ class Shelf extends Model
         return url('/shelves/' . implode('/', [urlencode($this->slug), trim($path, '/')]));
     }
 
-    /**
-     * Get the child books of this shelf.
-     */
-    public function books(): HasMany
+    public static function getBySlug(string $slug): self
     {
-        return $this->hasMany(Book::class);
+        return Shelf::where('slug', $slug)->firstOrFail();
+        
     }
 
     /**
-     * Get the user of this shelf.
+     * Get the child books of this shelf.
      */
-    public function publisher(): BelongsTo
+    public function books(): BelongsToMany
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsToMany(Book::class);
     }
+
 }

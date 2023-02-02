@@ -4,7 +4,7 @@
         <div class="flex flex-wrap">
             @forelse ($pages as $page)
                   <x-item-card :item='$page'>
-                    <x-item-show-link :href="route('book.show',$page->slug)">{{$page->name}}</x-item-show-link>
+                    <x-item-show-link :href="route('page.show',[$book->slug, $page->slug] )">{{$page->name}}</x-item-show-link>
                   </x-item-card>
             @empty
                 <p>no books</p>
@@ -15,7 +15,10 @@
                 <x-shelf-dropdown>
                 </x-shelf-dropdown>
             </div>
-            <a href="{{route('shelf.edit', $book->slug)}}">
+            <div class="mt-2">
+                <a href="{{route('page.create', $book->slug)}}"><x-primary-button>Новая страница</x-primary-button></a>
+            </div>  
+            <a href="{{route('book.edit', $book->slug)}}">
                 <x-primary-button>
                     Редактировать
                 </x-primary-button>

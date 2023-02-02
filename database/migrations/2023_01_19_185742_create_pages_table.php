@@ -14,15 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('pages', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreignId('book_id')->constrained()->cascadeOnDelete();
+            $table->increments('id');
+            $table->integer('book_id');
             $table->string('name');
-            $table->string('slug');
+            $table->string('slug')->unique();
             $table->text('body');
-            $table->timestamps();
-
-      
+            $table->timestamps();    
         });
     }
 

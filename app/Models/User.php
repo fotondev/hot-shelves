@@ -3,15 +3,17 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+
+
+use App\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -20,6 +22,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
     ];
@@ -43,29 +46,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-     /**
-     * Get the child shelf of this user.
-     */
-    public function shelves(): HasMany
-    {
-        return $this->hasMany(Shelf::class, 'shelf_id');
-    }
 
-    /**
-     * Get the child book of this user.
-     */
-    public function books(): HasMany
-    {
-        return $this->hasMany(Book::class, 'book_id');
-    }
-
-    /**
-     * Get all pages for this user.
-     */
-    public function pages(): HasMany
-    {
-        return $this->hasMany(Page::class, 'page_id');
-    }
+    
 
 
+
+
+  
 }

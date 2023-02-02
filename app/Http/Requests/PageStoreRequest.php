@@ -2,13 +2,12 @@
 
 namespace App\Http\Requests;
 
-
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateShelfRequest extends FormRequest
+class PageStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,7 +18,6 @@ class UpdateShelfRequest extends FormRequest
     {
         return true;
     }
-
     /**
      * Validate data
      *
@@ -30,13 +28,7 @@ class UpdateShelfRequest extends FormRequest
         $this->merge([
             'slug' => Str::slug($this->input('name'))
         ]);
-
-        $this->merge([
-            'user_id' => Auth::id()
-        ]);
-      
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -45,11 +37,10 @@ class UpdateShelfRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'string' ,' min:3', 'max:60'],
-            'description' =>['string', 'min:10', 'max:60'],
-            'image' => 'nullable|mimes:jpeg,png,gif,webp',
-            'book_id' => 'nullable',
-            'slug' => 'required|unique:shelves,slug'
+            'name' => ['required', 'string', ' min:3', 'max:60'],
+            'body' => ['string', 'min:10', 'max:60'],
+            'book_id' => ['required', Rule::exists('books', 'id')],
+            'slug' => ['required', Rule::unique('pages', 'slug')]
         ];
     }
 }

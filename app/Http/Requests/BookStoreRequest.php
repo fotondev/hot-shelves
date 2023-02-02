@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class BookStoreRequest extends FormRequest
 {
@@ -27,11 +28,6 @@ class BookStoreRequest extends FormRequest
         $this->merge([
             'slug' => Str::slug($this->input('name'))
         ]);
-
-        $this->merge([
-            'user_id' => Auth::id()
-        ]);
-      
     }
 
     /**
@@ -42,12 +38,10 @@ class BookStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'string' ,' min:3', 'max:60'],
-            'description' =>['string', 'min:10', 'max:60'],
-            'image' => 'nullable|mimes:jpeg,png,gif,webp',
-            'user_id' => 'required',
-            'shelf_id' => 'nullable',
-            'slug' => 'required|unique:books,slug'
+            'name' => ['required', 'string', ' min:3', 'max:60'],
+            'description' => ['string', 'min:10', 'max:60'],
+            'image' => ['nullable', 'mimes:jpeg,png,gif,webp'],
+            'slug' => ['required', Rule::unique('books', 'slug')]
         ];
     }
 }

@@ -2,18 +2,21 @@
     <h1><b>Shelf show page</b></h1>
     <div>
         <div class="flex flex-row">
-            @forelse ($books as $book)
+            {{-- @forelse ($books as $book)
                   <x-item-card :item='$book'>
-                    <x-item-show-link :href="route('shelf.show', $book->slug)">{{$book->name}}</x-item-show-link>
+                    <x-item-show-link :href="route('book.show', $book->slug)">{{$book->name}}</x-item-show-link>
                   </x-item-card>
             @empty
                 <p>no books</p>
-            @endforelse
+            @endforelse --}}
             <div class="">
                 <x-shelf-dropdown>
                 </x-shelf-dropdown>
             </div>
         </div>
+        <div class="mt-2">
+            <a href="{{route('shelf.book.create', $shelf->slug)}}"><x-primary-button>Новая книга</x-primary-button></a>
+        </div>    
         <a href="{{route('shelf.edit', $shelf->slug)}}">
             <x-primary-button>
                 Редактировать

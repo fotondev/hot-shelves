@@ -6,7 +6,7 @@ use App\Models\Book;
 use App\Models\Page;
 use App\Models\User;
 use App\Models\Shelf;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+
 
 /**
  * Get user created content

@@ -2,17 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Page;
+use App\Models\Shelf;
+use App\Models\Entity;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Book extends Model
 {
     use HasFactory;
-
-
 
     /**
      * The attributes that are mass assignable.
@@ -21,17 +24,9 @@ class Book extends Model
      */
     protected $fillable = [
         'name',
+        'slug',
         'description',
         'image',
-        'user_id',
-        'shelf_id'
-    ];
-
-    /**
-     * 
-     */
-    protected $with = [
-        'publisher'
     ];
 
     /**
@@ -56,6 +51,21 @@ class Book extends Model
             ));
     }
 
+    /**
+     * Get the url for this book.
+     */
+    public function getUrl(string $path = ''): string
+    {
+        return url('/books/' . implode('/', [urlencode($this->slug), trim($path, '/')]));
+    }
+    
+     /**
+     * Get slug from this book
+     */
+    public static function getSlug(self $book): string
+    {
+        return static::where('id', $book->id)->pluck('slug');
+    }
 
     /**
      * Get the shelves for this book
@@ -71,13 +81,5 @@ class Book extends Model
     public function pages(): HasMany
     {
         return $this->hasMany(Page::class);
-    }
-
-    /**
-     * Get the user of this book.
-     */
-    public function publisher(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id');
     }
 }

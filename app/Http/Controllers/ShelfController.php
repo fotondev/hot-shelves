@@ -1,13 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Shelf;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\CreateShelfRequest;
-use App\Http\Requests\UpdateShelfRequest;
+use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\ShelfStoreRequest;
+use App\Http\Requests\CreateShelfRequest;
+use App\Http\Requests\ShelfUpdateRequest;
+use App\Http\Requests\UpdateShelfRequest;
 
 
 class ShelfController extends Controller
@@ -18,21 +21,18 @@ class ShelfController extends Controller
      */
     public function index(): View
     {
-        return view('admin.shelves.index', [
-            'shelves' => Shelf::latest()->with('books')->filter(request(['search']))->get()
+        return view('shelves.index', [
+            'shelves' => Shelf::all()
         ]);
     }
 
     /**
      * Show shelf
      */
-    public function show(string $slug): View
+    public function show(Shelf $shelf): View
     {
-        $shelf = Shelf::where('slug',  $slug)->firstOrFail();
-        $books = $shelf->books;
-        return view('admin.shelves.show', [
-            'shelf' => $shelf,
-            'books' => $books,
+        return view('shelves.show', [
+            'shelf' => $shelf
         ]);
     }
 
@@ -42,13 +42,13 @@ class ShelfController extends Controller
     public function create(): View
     {
         $books = Book::all();
-        return view('admin.shelves.create', compact('books'));
+        return view('shelves.create', compact('books'));
     }
 
     /**
      * Store shelf
      */
-    public function store(CreateShelfRequest $request)
+    public function store(ShelfStoreRequest $request)
     {
         $data = $request->validated();
         $shelf = Shelf::create($data);
@@ -59,11 +59,10 @@ class ShelfController extends Controller
     /**
      * Show edit shelf form
      */
-    public function edit(string $slug): View
+    public function edit(Shelf $shelf): View
     {
-        $shelf = Shelf::where('slug',  $slug)->firstOrFail();
         $books = Book::all();
-        return view('admin.shelves.edit', [
+        return view('shelves.edit', [
             'shelf' => $shelf,
             'books' => $books
         ]);
@@ -72,21 +71,19 @@ class ShelfController extends Controller
     /**
      * Update shelf
      */
-    public function update(UpdateShelfRequest $request, string $slug)
+    public function update(ShelfUpdateRequest $request, Shelf $shelf)
     {
         $data = $request->validated();
-        $shelf = Shelf::where('slug',  $slug)->firstOrFail();
         $shelf->update($data);
         session()->flash('message', 'Полка отредактирована');
         return redirect(route('shelves.show'));
     }
 
-     /**
+    /**
      * Delete shelf
      */
-    public function destroy(string $slug)
+    public function destroy(Shelf $shelf)
     {
-        $shelf = Shelf::where('slug',  $slug)->firstOrFail();
         $shelf->delete();
         session()->flash('message', 'Полка удалена');
         return redirect(route('shelves.show'));

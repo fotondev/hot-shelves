@@ -25,7 +25,7 @@ class ShelfDropdown extends Component
     public function render()
     {
         return view('components.shelf-dropdown', [
-            'shelves' => Shelf::all(),
+            'shelves' => Shelf::select('name', 'slug', 'id')->get(),
             'currentShelf' => Shelf::firstWhere('slug', request('shelf'))
         ]);
     }

@@ -15,8 +15,6 @@ return new class extends Migration
     {
         Schema::create('books', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id');
-            $table->foreignId('shelf_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('slug')->unique();
             $table->text('description')->nullable();

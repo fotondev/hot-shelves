@@ -1,25 +1,28 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Shelf;
 use Illuminate\View\View;
+// use App\Services\BookService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BookStoreRequest;
 use App\Http\Requests\BookUpdateRequest;
 
-
 class BookController extends Controller
 {
+    public function __construct()
+    {
+    }
     /**
      * Show all books
      */
     public function index(): View
     {
-        return view('admin.books.index', [
+        return view('books.index', [
             'books' => Book::latest()
-                ->filter(request(['search', 'shelf',]))
-                ->with('publisher')
+                ->filter(request(['search']))
                 ->get()
         ]);
     }
@@ -27,49 +30,51 @@ class BookController extends Controller
     /**
      * Show create form
      */
-    public function create(): View
+    public function create(Shelf $shelf): View
     {
-        return view('admin.books.create');
+        return view('books.create', [
+            'shelf' => $shelf
+        ]);
     }
 
     /**
      * Store new book
      */
-    public function store(BookStoreRequest $request)
+    public function store(BookStoreRequest $request, Shelf $shelf)
     {
         $data = $request->validated();
         $book = Book::create($data);
-        return redirect(route('books.show'));
+        return redirect(route('shelf.show'));
     }
 
     /**
      * Show book
      */
-    public function show(string $slug): View
+    public function show(Book $book): View
     {
-        $book = Book::where('slug', '=', $slug)->with(['pages', 'publisher'])->firstOrFail();
-        $pages = $book->pages->load(['publisher']);
-        return view('admin.books.show', [
+        $pages = $book->pages;
+        return view('books.show', [
             'book' => $book,
             'pages' => $pages,
         ]);
     }
 
-     /**
+    /**
      * Show edit form
      */
-    public function edit(): View
+    public function edit(Book $book): View
     {
-        return view('admin.books.edit');
+        return view('books.edit', [
+            'book'=> $book
+        ]);
     }
 
-     /**
+    /**
      * Update book
      */
-    public function update(BookUpdateRequest $request, string $slug)
+    public function update(BookUpdateRequest $request, Book $book)
     {
         $data = $request->validated();
-        $book = Book::where('slug', $slug)->firstOrFail();
         $book->update($data);
         return redirect(route('book.show'));
     }
@@ -77,9 +82,8 @@ class BookController extends Controller
     /**
      * Delete book
      */
-    public function destroy(string $slug)
+    public function destroy(Book $book)
     {
-        $book = Book::where('slug', $slug)->firstOrFail();
         $book->delete();
         return redirect(route('books.show'));
     }

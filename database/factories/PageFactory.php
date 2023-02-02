@@ -19,7 +19,7 @@ class PageFactory extends Factory
     public function definition()
     {
         return [
-            'name' => fake()->sentence(),
+            'name' => fake()->unique()->sentence(),
             'slug' => fake()->slug(),
             'body' => fake()->text(),   
         ];

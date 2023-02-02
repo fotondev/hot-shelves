@@ -1,7 +1,10 @@
 <x-app-layout>
     <div class="flex flex-col items-center justify-center">
         <h1><b>Создать новую книгу</b></h1>
-        <form action="{{ route('book.store') }}" method="POST" enctype="multipart/form-data">
+        @if (isset($shelf))
+        <h2>В полку {{$shelf->name}}</h2>
+        @endif
+        <form action="{{ isset($shelf) ? route('shelf.book.store', $shelf->slug) : route('book.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="mb-6">
                 <label for="title-input" class="block mb-2 text-sm font-medium text-gray-900">Имя</label>

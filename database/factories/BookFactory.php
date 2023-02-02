@@ -21,7 +21,7 @@ class BookFactory extends Factory
         return [
             'name' => fake()->sentence(),
             'slug' => fake()->slug(),
-            'description' =>fake()->paragraph(),
+            'description' =>fake()->sentence(),
         ];
     }
 }

@@ -37,42 +37,34 @@ class DatabaseSeeder extends Seeder
 
         $admin =  User::create([
             'name' => 'Admin',
-            'slug' => 'adminx',
+            'username' => 'Admin1',
             'email' => 'admin@gmail.com',
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
-            'is_admin' => 1
         ]);
 
         $user = User::factory()->create();
 
-
         /** 
          * Dumming content  
          */
-        $createdByAdmin = ['user_id' => $admin->id];
+        $createdByAdmin = ['createdBy' => $admin->id];
+        $createdByUser = ['createdBy' => $user->id];
+        
+        //Create Shelves
         Shelf::factory()->create(array_merge($createdByAdmin, ['name' => 'Shelf-' . Str::random(3)]));
-        // Shelf::factory()->create(array_merge($createdByAdmin, ['name' => 'Shelf-' . Str::random(3)]));
-        // Shelf::factory()->create(array_merge($createdByAdmin, ['name' => 'Shelf-' . Str::random(3)]));
-     
-        $firstBook = Book::factory()->create(array_merge($createdByAdmin, ['name'=>'Book' . ($admin->id) ], ['shelf_id' => 1]));
-        $secondBook = Book::factory()->create(array_merge($createdByAdmin, ['name'=>'Book' . ($admin->id+1) ], ['shelf_id' => 1]));
-        $thirdBook = Book::factory()->create(array_merge($createdByAdmin, ['name'=>'Book' . ($admin->id+2) ], ['shelf_id' => 1]));
-        $forthBook = Book::factory()->create(array_merge($createdByAdmin, ['name'=>'Book' . ($admin->id+3) ], ['shelf_id' => 1]));
-
-        Page::factory(30)->create(array_merge($createdByAdmin, ['name' => 'Page-' . Str::random(10), 'book_id' =>$firstBook->id]));
-        Page::factory(30)->create(array_merge($createdByAdmin, ['name' => 'Page-' . Str::random(10), 'book_id' =>$secondBook->id]));
-        Page::factory(30)->create(array_merge($createdByAdmin, ['name' => 'Page-' . Str::random(10), 'book_id' =>$thirdBook->id]));
-        Page::factory(30)->create(array_merge($createdByAdmin, ['name' => 'Page-' . Str::random(10), 'book_id' =>$forthBook->id]));
-
-        $createdByUser = ['user_id' => $user->id];
-        Shelf::factory()->create(array_merge($createdByUser, ['name' => 'Shelf-' . Str::random(3)]));
         Shelf::factory()->create(array_merge($createdByUser, ['name' => 'Shelf-' . Str::random(3)]));
         Shelf::factory()->create(array_merge($createdByUser, ['name' => 'Shelf-' . Str::random(3)]));
 
-        $fifthBook = Book::factory()->create(array_merge($createdByUser, ['name'=>'Book' . ($user->id+3) ], ['shelf_id' => 4]));
-        $sixBook = Book::factory()->create(array_merge($createdByUser, ['name'=>'Book' . ($user->id+4) ], ['shelf_id' => 4]));
-        Page::factory(30)->create(array_merge($createdByUser, ['name' => 'Page-' . Str::random(10), 'book_id' =>$fifthBook->id]));
-        Page::factory(30)->create(array_merge($createdByUser, ['name' => 'Page-' . Str::random(10), 'book_id' =>$sixBook->id]));
+        //Created Books
+        $books = Book::factory(6)->create();
+
+        //Created Pages
+        foreach ($books as $book) {
+            Page::factory()->create([
+               'book_id' => $book->id,
+               'name' => 'Page-' . Str::random(10)
+            ]);
+        }  
     }
 }
