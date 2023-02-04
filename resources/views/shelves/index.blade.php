@@ -5,12 +5,13 @@
             @foreach ($shelves as $shelf)
                 <div class="flex flex-col">
                     <x-item-card :item='$shelf'>
-                        <x-item-show-link :href="route('shelf.show', $shelf->slug)">{{$shelf->name}}</x-item-show-link>
+                        <x-item-show-link :href="route('shelf.show', $shelf->slug)">{{ $shelf->name }}</x-item-show-link>
                     </x-item-card>
                 </div>
-            @endforeach          
-            <a href="{{ route('shelf.create') }}">Новая полка</a>
+            @endforeach
+           @can('create content')
+               <a href="{{ route('shelf.create') }}">Новая полка</a>
+           @endcan               
         </div>
     </div>
-
 </x-app-layout>

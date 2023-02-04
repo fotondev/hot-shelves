@@ -2,21 +2,21 @@
 
 namespace App\Traits;
 
+use App\Models\Role;
+use App\Models\Permission;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 
 trait HasRoles
 {
 
-    
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'role_user');
     }
 
     /**
-     * @param mixed ...$roles
-     * @return bool
+     * Check if user has roles
      */
     public function hasRole(...$roles)
     {
@@ -24,30 +24,29 @@ trait HasRoles
             if ($this->roles->contains('name', $role)) {
                 return true;
             }
+            return false;
         }
-        return false;
     }
 
     /**
-     * @param $permission
-     * @return bool
+     * Check if user has permission through role
      */
-    public function hasPermissionThroughRole($permission)
+    public function hasPermissionThroughRole(string $permissionName): bool
     {
+        $permission = Permission::getByName($permissionName);
         foreach ($permission->roles as $role) {
             if ($this->roles->contains($role)) {
                 return true;
             }
+            return false;
         }
-        return false;
     }
 
     /**
-     * @param $permission
-     * @return bool
+     * Check if user has permission
      */
-    public function hasPermissionTo($permission)
+    public function hasPermissionTo(string $permissionName): bool
     {
-        return $this->hasPermissionThroughRole($permission);
+        return $this->hasPermissionThroughRole($permissionName);
     }
 }

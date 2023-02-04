@@ -6,6 +6,7 @@ namespace App\Models;
 
 
 use App\Traits\HasRoles;
+use App\Traits\HasRolesAndPermissions;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

@@ -3,16 +3,16 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\Car;
+
 use App\Models\Book;
 use App\Models\Page;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\Shelf;
+use App\Models\Permission;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
-use App\Interfaces\SlugBuilderInterface;
-use Carbon\Factory;
-use Closure;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,47 +24,62 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
-        // Shelf::truncate();
-        // Book::truncate();
-        // Page::truncate();
+        //Create permissions
+        Permission::create(['name' => 'create content']);
+        Permission::create(['name' => 'edit content']);
+        Permission::create(['name' => 'delete content']);
+        Permission::create(['name' => 'give permissions']);
 
-        // \App\Models\User::factory(10)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        //Create roles
+        $writer = Role::create(['name' => 'writer']);
+        $writer->attachPermission('create content');
 
+        $editor = Role::create(['name' => 'editor']);
+        $editor->attachPermission('edit content');
+        $editor->attachPermission('delete content');
+
+        $viewer = Role::create(['name' => 'viewer']);
+
+
+        //Admin can everithing
+        $adminRole = Role::create(['name' => 'Admin']);
         $admin =  User::create([
             'name' => 'Admin',
-            'username' => 'Admin1',
+            'username' => 'Admin',
             'email' => 'admin@gmail.com',
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
         ]);
+        $admin->roles()->attach($adminRole);
 
+        //Create users and attach roles
         $user = User::factory()->create();
+        $user2 = User::factory()->create();
+        $user3 = User::factory()->create();
 
-        /** 
-         * Dumming content  
-         */
-        $createdByAdmin = ['createdBy' => $admin->id];
+
+        $user->roles()->attach($writer);
+        $user2->roles()->attach($editor);
+        $user3->roles()->attach($viewer);
+
+      
+        $createdByAdminRole = ['createdBy' => $admin->id];
         $createdByUser = ['createdBy' => $user->id];
-        
+
         //Create Shelves
-        Shelf::factory()->create(array_merge($createdByAdmin, ['name' => 'Shelf-' . Str::random(3)]));
+        Shelf::factory()->create(array_merge($createdByAdminRole, ['name' => 'Shelf-' . Str::random(3)]));
         Shelf::factory()->create(array_merge($createdByUser, ['name' => 'Shelf-' . Str::random(3)]));
         Shelf::factory()->create(array_merge($createdByUser, ['name' => 'Shelf-' . Str::random(3)]));
 
-        //Created Books
+        //Create Books
         $books = Book::factory(6)->create();
 
-        //Created Pages
+        //Create Pages
         foreach ($books as $book) {
-            Page::factory()->create([
-               'book_id' => $book->id,
-               'name' => 'Page-' . Str::random(10)
+            Page::factory(10)->create([
+                'book_id' => $book->id,
             ]);
-        }  
+        }
     }
 }

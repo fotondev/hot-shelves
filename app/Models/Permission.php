@@ -10,9 +10,13 @@ class Permission extends Model
 {
     use HasFactory;
 
-  
     public function roles(): BelongsToMany
     {   
         return $this->belongsToMany(Role::class, 'permission_role');
+    }
+
+    public static function getByName(string $name): self
+    {
+        return Permission::where('name', $name)->first();
     }
 }
