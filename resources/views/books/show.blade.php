@@ -18,11 +18,13 @@
             <div class="mt-2">
                 <a href="{{route('page.create', $book->slug)}}"><x-primary-button>Новая страница</x-primary-button></a>
             </div>  
+            @role('Admin')
             <a href="{{route('book.edit', $book->slug)}}">
                 <x-primary-button>
                     Редактировать
                 </x-primary-button>
             </a>
+            @endrole
             <form action="{{route('book.delete', $book->slug)}}" method="POST">
                 @csrf
                 @method('DELETE')

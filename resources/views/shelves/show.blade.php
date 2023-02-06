@@ -1,14 +1,14 @@
 <x-app-layout>
     <h1><b>Shelf show page</b></h1>
     <div>
-        <div class="flex flex-row">
-            {{-- @forelse ($books as $book)
+        <div class="flex flex-wrap">
+            @forelse ($books as $book)
                   <x-item-card :item='$book'>
                     <x-item-show-link :href="route('book.show', $book->slug)">{{$book->name}}</x-item-show-link>
                   </x-item-card>
             @empty
                 <p>no books</p>
-            @endforelse --}}
+            @endforelse
             <div class="">
                 <x-shelf-dropdown>
                 </x-shelf-dropdown>

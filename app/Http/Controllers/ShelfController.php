@@ -31,8 +31,10 @@ class ShelfController extends Controller
      */
     public function show(Shelf $shelf): View
     {
+        $books = $shelf->books;
         return view('shelves.show', [
-            'shelf' => $shelf
+            'shelf' => $shelf,
+            'books' => $books
         ]);
     }
 
@@ -52,8 +54,11 @@ class ShelfController extends Controller
     {
         $data = $request->validated();
         $shelf = Shelf::create($data);
+        if ($request->has('books')) {
+            $shelf->books()->attach($request->books);
+        }
         session()->flash('message', 'Полка создана');
-        return redirect(route('shelves.show'));
+        return to_route('shelves.show');
     }
 
     /**
@@ -75,8 +80,9 @@ class ShelfController extends Controller
     {
         $data = $request->validated();
         $shelf->update($data);
+        $shelf->books()->sync($request->books);
         session()->flash('message', 'Полка отредактирована');
-        return redirect(route('shelves.show'));
+        return to_route('shelves.show');
     }
 
     /**
@@ -86,6 +92,6 @@ class ShelfController extends Controller
     {
         $shelf->delete();
         session()->flash('message', 'Полка удалена');
-        return redirect(route('shelves.show'));
+        return to_route('shelves.show');
     }
 }

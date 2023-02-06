@@ -57,7 +57,16 @@ class Shelf extends Model
      */
     public function books(): BelongsToMany
     {
-        return $this->belongsToMany(Book::class);
+        return $this->belongsToMany(Book::class, 'book_shelf');
+    }
+
+
+    /**
+     * Add book to this shelf
+     */
+    public function addBook(Book $book)
+    { 
+       return $this->books()->attach($book->id);
     }
 
 }

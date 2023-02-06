@@ -48,7 +48,7 @@ class ShelfUpdateRequest extends FormRequest
             'name' => ['required', 'string' ,' min:3', 'max:60'],
             'description' =>['string', 'min:10', 'max:60'],
             'image' => 'nullable|mimes:jpeg,png,gif,webp',
-            'slug' => ['required', Rule::unique('shelves', 'slug')]
+            'slug' => ['required', Rule::unique('shelves', 'slug')->ignore($this->shelf->id)]
         ];
     }
 }

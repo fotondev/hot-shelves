@@ -1,6 +1,8 @@
 <?php
 
+use App\Providers\PermissionServiceProvider;
 use Illuminate\Support\Facades\Facade;
+
 
 return [
 
@@ -181,6 +183,8 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        PermissionServiceProvider::class,
+       
 
         /*
          * Package Service Providers...

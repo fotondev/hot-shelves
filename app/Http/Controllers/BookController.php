@@ -30,7 +30,7 @@ class BookController extends Controller
     /**
      * Show create form
      */
-    public function create(Shelf $shelf): View
+    public function create(Shelf $shelf = null): View
     {
         return view('books.create', [
             'shelf' => $shelf
@@ -40,11 +40,16 @@ class BookController extends Controller
     /**
      * Store new book
      */
-    public function store(BookStoreRequest $request, Shelf $shelf)
+    public function store(BookStoreRequest $request, Shelf $shelf = null)
     {
+
         $data = $request->validated();
         $book = Book::create($data);
-        return redirect(route('shelf.show'));
+        if ($shelf !== null) {
+            $shelf->addBook($book);
+           return to_route('shelf.show', ['shelf' => $shelf]);
+        }
+        return to_route('book.show', ['book' => $book]);
     }
 
     /**
@@ -65,7 +70,7 @@ class BookController extends Controller
     public function edit(Book $book): View
     {
         return view('books.edit', [
-            'book'=> $book
+            'book' => $book
         ]);
     }
 
@@ -76,7 +81,7 @@ class BookController extends Controller
     {
         $data = $request->validated();
         $book->update($data);
-        return redirect(route('book.show'));
+        return to_route('book.show');
     }
 
     /**
@@ -85,6 +90,6 @@ class BookController extends Controller
     public function destroy(Book $book)
     {
         $book->delete();
-        return redirect(route('books.show'));
+        return to_route('books.show');
     }
 }

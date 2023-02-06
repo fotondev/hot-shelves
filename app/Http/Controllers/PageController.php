@@ -29,7 +29,7 @@ class PageController extends Controller
     {
         $data = $request->validated();
         $page = Page::create($data);
-        return redirect(route('book.show'));
+        return to_route('book.show');
     }
 
     public function show(Book $book, Page $page)
@@ -51,12 +51,12 @@ class PageController extends Controller
     {
         $data = $request->validated();
         $page->update($data);
-        return redirect(route('book.show'));
+        return to_route('book.show');
     }
 
     public function destroy(Page $page)
     {
         $page->delete();
-        return redirect(route('book.show'));
+        return to_route('book.show');
     }
 }

@@ -9,9 +9,9 @@
                     </x-item-card>
                 </div>
             @endforeach
-           @can('create content')
+           @role('Admin')
                <a href="{{ route('shelf.create') }}">Новая полка</a>
-           @endcan               
+           @endrole               
         </div>
     </div>
 </x-app-layout>

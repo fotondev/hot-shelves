@@ -4,9 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class Admin
+class RoleMiddleware
 {
     /**
      * Handle an incoming request.
@@ -15,10 +14,13 @@ class Admin
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request,  Closure $next, $role, $permission = null)
     {
-        if(!auth()->check() || !auth()->user()->hasRole('Admin')){
-            return redirect('login')->withSuccess('Доступ только для администратора!');
+        if(!auth()->user()->hasRole($role)) {
+            abort(404);
+        }
+        if($permission !== null && !auth()->user()->hasPermissionTo($permission)) {
+            abort(404);
         }
         return $next($request);
     }

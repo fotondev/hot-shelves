@@ -34,11 +34,14 @@ class Book extends Model
      */
     public static function scopeFilter($query, array $filters): void
     {
-        $query->when($filters['search'] ?? false, fn ($query, $search) =>
-        $query->where(fn($q)=>
-            $q->where('name', 'like', '%' . $search . '%')
-            ->orWhere('description', 'like', '%' . $search . '%')
-        )
+        $query->when(
+            $filters['search'] ?? false,
+            fn ($query, $search) =>
+            $query->where(
+                fn ($q) =>
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%')
+            )
         );
 
         $query->when($filters['shelf'] ?? false, fn ($query, $shelf) =>
@@ -58,8 +61,8 @@ class Book extends Model
     {
         return url('/books/' . implode('/', [urlencode($this->slug), trim($path, '/')]));
     }
-    
-     /**
+
+    /**
      * Get slug from this book
      */
     public static function getSlug(self $book): string
@@ -72,7 +75,7 @@ class Book extends Model
      */
     public function shelves(): BelongsToMany
     {
-        return $this->belongsToMany(Shelf::class, 'shelf_id');
+        return $this->belongsToMany(Shelf::class, 'book_shelf');
     }
 
     /**
